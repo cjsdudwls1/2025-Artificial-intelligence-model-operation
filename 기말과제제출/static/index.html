@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실습실 시간표 자동 배정 시스템</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 실습실 시간표 자동 배정 시스템</h1>
+            <p>CSV 파일을 업로드하여 실습실 시간표를 자동으로 배정하고, 공실을 분석할 수 있습니다.</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="schedule-build">📤 시간표 배정</button>
+            <button class="tab-btn" data-tab="schedule-view">📋 시간표 조회</button>
+            <button class="tab-btn" data-tab="vacancy">📊 공실 분석</button>
+            <button class="tab-btn" data-tab="course-manage">➕ 강의 관리</button>
+        </nav>
+
+        <!-- 시간표 배정 탭 -->
+        <div id="schedule-build" class="tab-content active">
+            <h2>CSV 파일 업로드 및 시간표 자동 배정</h2>
+            <div class="upload-section">
+                <input type="file" id="csv-file" accept=".csv">
+                <button class="btn btn-primary" onclick="buildSchedule()">배정 실행</button>
+            </div>
+            <div id="build-result" class="result-box"></div>
+            <div class="display-section">
+                <div id="build-timetable-calendar" class="calendar-view"></div>
+            </div>
+        </div>
+
+        <!-- 시간표 조회 탭 -->
+        <div id="schedule-view" class="tab-content">
+            <h2>배정된 시간표 조회 (강의실별)</h2>
+            <div class="filter-section">
+                <select id="room-select" onchange="viewSchedule()">
+                    <option value="전체">전체</option>
+                    <option value="1215">1215</option>
+                    <option value="1216">1216</option>
+                    <option value="1217">1217</option>
+                    <option value="1418">1418</option>
+                    <option value="RENTAL_1">RENTAL_1</option>
+                </select>
+                <button class="btn btn-secondary" onclick="viewSchedule()">새로고침</button>
+            </div>
+            <div id="view-summary" class="summary-box"></div>
+            <div id="view-timetable-calendar" class="calendar-view"></div>
+        </div>
+
+        <!-- 공실 분석 탭 -->
+        <div id="vacancy" class="tab-content">
+            <h2>공실 분석 및 활용률 확인</h2>
+            <button class="btn btn-primary" onclick="analyzeVacancy()">공실 분석 실행</button>
+            <div id="vacancy-result" class="result-box"></div>
+        </div>
+
+        <!-- 강의 관리 탭 -->
+        <div id="course-manage" class="tab-content">
+            <h2>강의 추가 및 삭제</h2>
+            
+            <div class="section">
+                <h3>강의 추가</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>과목코드</label>
+                        <input type="text" id="course-code" placeholder="예: H150">
+                    </div>
+                    <div class="form-group">
+                        <label>과목명</label>
+                        <input type="text" id="course-name" placeholder="예: 캡스톤디자인심화실무">
+                    </div>
+                    <div class="form-group">
+                        <label>강좌담당교수</label>
+                        <input type="text" id="instructor" placeholder="예: 고철영">
+                    </div>
+                    <div class="form-group">
+                        <label>개설학과</label>
+                        <input type="text" id="department" placeholder="예: 소프트웨어융합학과">
+                    </div>
+                    <div class="form-group">
+                        <label>과정</label>
+                        <input type="text" id="process" placeholder="예: 전공심화" value="전공심화">
+                    </div>
+                    <div class="form-group">
+                        <label>영역구분</label>
+                        <input type="text" id="area" placeholder="예: 전공" value="전공">
+                    </div>
+                    <div class="form-group">
+                        <label>수강인원</label>
+                        <input type="number" id="enrollment" value="12">
+                    </div>
+                    <div class="form-group">
+                        <label>수업주수</label>
+                        <input type="number" id="weeks" value="7">
+                    </div>
+                    <div class="form-group">
+                        <label>학점</label>
+                        <input type="number" id="credits" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>강좌대표교수</label>
+                        <input type="text" id="main-instructor" placeholder="예: 고철영">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="is-lab" checked> 실습과목
+                        </label>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="addCourse()">추가 및 재배정</button>
+                <div id="add-result" class="result-box"></div>
+            </div>
+
+            <div class="section">
+                <h3>강의 목록</h3>
+                <button class="btn btn-secondary" onclick="listCourses()">목록 새로고침</button>
+                <div id="course-list-table"></div>
+            </div>
+
+            <div class="section">
+                <h3>강의 삭제</h3>
+                <div class="delete-section">
+                    <div id="delete-checkboxes" class="checkbox-list"></div>
+                    <button class="btn btn-danger" onclick="deleteCourses()">선택한 강의 삭제 및 재배정</button>
+                </div>
+                <div id="delete-result" class="result-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
+
